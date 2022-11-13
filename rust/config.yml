@@ -17,6 +17,7 @@ jobs:
   build-linux:
     docker:
       - image: defmc/rust:latest
+    resource_class: small
     steps:
       - checkout
       - restore-cache-arts
@@ -27,6 +28,7 @@ jobs:
   clippy:
     docker:
       - image: defmc/rust:latest
+    resource_class: small
     steps:
       - checkout
       - restore-cache-arts
@@ -37,6 +39,7 @@ jobs:
   format:
     docker:
       - image: defmc/rust:latest
+    resource_class: small
     steps:
       - checkout
       - run: rustup component add rustfmt
@@ -46,15 +49,17 @@ jobs:
   test:
     docker:
       - image: defmc/rust:latest
+    resource_class: small
     steps:
       - checkout
       - restore-cache-arts
       - run: cargo --version
-      - run: cargo test --all
+      - run: cargo test --all -- --test-threads=1
   
   bench:
     docker:
       - image: defmc/rust:latest
+    resource_class: small
     steps:
       - checkout
       - restore-cache-arts
