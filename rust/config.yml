@@ -1,17 +1,26 @@
 version: 2.1
 
 commands:
-  save-cache-arts:
+  setup-cache-env:
     steps:
-      - save_cache:
-          key: cache-{{ checksum "Cargo.lock" }}
-          paths:
-            - ~/.cargo
-            - target
-  restore-cache-arts:
+      - run: |
+            echo 'export "RUSTC_WRAPPER"="sccache"' >> $BASH_ENV
+            echo 'export "SCCACHE_CACHE_SIZE"="1G"' >> $BASH_ENV
+            sccache --version
+
+  restore-cache:
     steps:
       - restore_cache:
-          key: cache-{{ checksum "Cargo.lock" }}
+          name: Restore sccache cache
+          key: sccache-cache-stable-{{ arch }}-{{ .Environment.CIRCLE_JOB }}
+
+  save-cache:
+    steps:
+      - save_cache:
+          name: Save sccache cache
+          key: sccache-cache-stable-{{ arch }}-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
+          paths:
+            - "~/.cache/sccache"
 
 jobs:
   build-linux:
@@ -20,10 +29,11 @@ jobs:
     resource_class: small
     steps:
       - checkout
-      - restore-cache-arts
+      - setup-cache-env
+      - restore-cache
       - run: cargo --version
       - run: cargo build --release
-      - save-cache-arts
+      - save-cache
 
   clippy:
     docker:
@@ -31,10 +41,12 @@ jobs:
     resource_class: small
     steps:
       - checkout
-      - restore-cache-arts
+      - setup-cache-env
+      - restore-cache
       - run: cargo --version
       - run: rustup component add clippy
       - run: cargo clippy -- -D warnings
+      - save-cache
 
   format:
     docker:
@@ -42,8 +54,6 @@ jobs:
     resource_class: small
     steps:
       - checkout
-      - run: rustup component add rustfmt
-      - run: cargo --version
       - run: cargo fmt --all -- --check
 
   test:
@@ -52,9 +62,11 @@ jobs:
     resource_class: small
     steps:
       - checkout
-      - restore-cache-arts
+      - setup-cache-env
+      - restore-cache
       - run: cargo --version
       - run: cargo test --all -- --test-threads=1
+      - save-cache
   
   bench:
     docker:
@@ -62,9 +74,11 @@ jobs:
     resource_class: small
     steps:
       - checkout
-      - restore-cache-arts
+      - setup-cache-env
+      - restore-cache
       - run: cargo --version
       - run: cargo bench --all
+      - save-cache
 
 workflows:
   test:
