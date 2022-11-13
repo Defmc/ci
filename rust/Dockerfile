@@ -1,8 +1,11 @@
 FROM rust:alpine
 
-RUN apk add llvm llvm-dev libstdc++ musl-dev g++ lld
+RUN apk add llvm llvm-dev libstdc++ musl-dev g++ lld openssl-dev
 
 RUN rustup component add rustfmt
 RUN rustup component add clippy
+RUN cargo install sccache
 
 ENV RUSTFLAGS="$RUSTFLAGS -C link-arg=-fuse-ld=lld"
+ENV RUSTC_WRAPPER="sccache"
+ENV SCCACHE_CACHE_SIZE="1G"
