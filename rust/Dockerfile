@@ -8,7 +8,7 @@ RUN rustup component add clippy
 RUN cargo install sccache
 RUN cargo install cargo-audit
 RUN cargo install cargo-outdated
-RUN cargo install cargo-udeps
+RUN RUSTFLAGS="-Ctarget-feature=-crt-static" cargo install cargo-udeps
 
 ENV RUSTFLAGS="$RUSTFLAGS -C link-arg=-fuse-ld=lld"
 ENV RUSTC_WRAPPER="sccache"
