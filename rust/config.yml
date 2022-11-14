@@ -23,7 +23,6 @@ jobs:
     steps:
       - checkout
       - restore-cache
-      - run: cargo --version
       - run: cargo build --release
       - save-cache
 
@@ -34,7 +33,6 @@ jobs:
     steps:
       - checkout
       - restore-cache
-      - run: cargo --version
       - run: rustup component add clippy
       - run: cargo clippy -- -D warnings
       - save-cache
@@ -54,7 +52,6 @@ jobs:
     steps:
       - checkout
       - restore-cache
-      - run: cargo --version
       - run: cargo test --all -- --test-threads=1
       - save-cache
 
@@ -65,8 +62,7 @@ jobs:
     steps:
       - checkout
       - restore-cache
-      - run: cargo --version
-      - run: cargo udeps --all-targets
+      - run: cargo udeps +nightly --all-targets
       - save-cache
 
   audit:
@@ -75,7 +71,6 @@ jobs:
     resource_class: small
     steps:
       - checkout
-      - run: cargo --version
       - run: cargo generate-lockfile
       - run: cargo audit
 
@@ -86,7 +81,6 @@ jobs:
     steps:
       - checkout
       - restore-cache
-      - run: cargo --version
       - run: cargo bench --all
       - save-cache
 

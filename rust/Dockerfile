@@ -4,6 +4,7 @@ RUN apk add -U llvm llvm-dev libstdc++ musl-dev g++ lld openssl-dev
 
 RUN rustup component add rustfmt
 RUN rustup component add clippy
+RUN rustup install nightly
 
 RUN cargo install sccache
 RUN cargo install cargo-outdated
