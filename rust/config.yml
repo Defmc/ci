@@ -57,6 +57,17 @@ jobs:
       - run: cargo --version
       - run: cargo test --all -- --test-threads=1
       - save-cache
+
+  udeps:
+    docker:
+      - image: defmc/rust:latest
+    resource_class: small
+      - checkout
+      - restore-cache
+      - run: cargo --version
+      - run: cargo bench --all
+      - save-cache
+
   
   bench:
     docker:
@@ -73,4 +84,4 @@ workflows:
   test:
     jobs: [build-linux, test, bench]
   code-quality:
-    jobs: [format, clippy]
+    jobs: [format, clippy, udeps]
