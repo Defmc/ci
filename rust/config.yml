@@ -66,7 +66,7 @@ jobs:
       - checkout
       - restore-cache
       - run: cargo --version
-      - run: cargo bench --all
+      - run: cargo udeps --all
       - save-cache
 
   
