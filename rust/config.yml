@@ -72,7 +72,7 @@ jobs:
     steps:
       - checkout
       - run: cargo generate-lockfile
-      - run: cargo audit
+      - run: cargo audit --all-targets
 
   bench:
     docker:
@@ -88,6 +88,6 @@ workflows:
   test:
     jobs: [build-linux, test, bench]
   code-quality:
-    jobs: [format, clippy]
+    jobs: [format, clippy, udeps]
   security:
     jobs: [audit]
