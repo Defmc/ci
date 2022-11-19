@@ -24,7 +24,11 @@ while read -r repo; do
 
   cp ../$1/config.yml .circleci/config.yml
 
-  [ -f ".circleci/flowpatch" ] && git apply ".circleci/flowpatch"
+  if [ -f ".circleci/flowpatch" ]; then
+    echo "founded a flowpatch. Applying it..."
+    git apply ".circleci/flowpatch"
+    echo "patch applied"
+  fi
 
   git add .circleci/config.yml
   git commit -m "$label(ci): $work workflow for $1 from Defmc/ci" .circleci/config.yml
