@@ -31,7 +31,7 @@ while read -r repo; do
   fi
 
   git add .circleci/config.yml
-  git commit -m "$label(ci): $work workflow for $1 from Defmc/ci" .circleci/config.yml
+  git commit -m "[skip ci] $label(ci): $work workflow for $1 from Defmc/ci" .circleci/config.yml
   git push
 
   cd ..
